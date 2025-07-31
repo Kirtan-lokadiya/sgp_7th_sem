@@ -4,79 +4,210 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>SwiftRoute - Intelligent Route Optimization</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
     <link
       rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
     <style>
+      :root {
+        --primary-color: #3498db;
+        --secondary-color: #2980b9;
+        --dark-color: #2c3e50;
+        --light-color: #ecf0f1;
+        --text-color: #34495e;
+        --white-color: #ffffff;
+        --navbar-height: 80px;
+      }
+
       * {
         margin: 0;
         padding: 0;
         box-sizing: border-box;
-        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        font-family: "Poppins", sans-serif;
         scroll-behavior: smooth;
+        scroll-padding-top: var(--navbar-height);
       }
 
       body {
-        line-height: 1.6;
+        line-height: 1.7;
+        color: var(--text-color);
+        background-color: var(--white-color);
       }
 
-      /* Navigation */
+      /* --- Utilities --- */
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 2rem;
+      }
+
+      section {
+        padding: 6rem 0;
+      }
+
+      .section-header {
+        text-align: center;
+        margin-bottom: 4rem;
+      }
+
+      .section-header h2 {
+        font-size: 2.5rem;
+        color: var(--dark-color);
+        position: relative;
+        display: inline-block;
+        padding-bottom: 0.5rem;
+      }
+
+      .section-header h2::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60px;
+        height: 3px;
+        background-color: var(--primary-color);
+        border-radius: 2px;
+      }
+
+      /* --- Navigation --- */
       .navbar {
         display: flex;
         justify-content: space-between;
         align-items: center;
         padding: 1.5rem 6rem;
-        background-color: #fff;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        background-color: transparent;
         position: fixed;
         width: 100%;
         top: 0;
         z-index: 1000;
+        transition: background-color 0.4s ease, padding 0.4s ease,
+          box-shadow 0.4s ease;
+      }
+
+      .navbar.scrolled {
+        background-color: var(--white-color);
+        box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
+        padding: 1rem 6rem;
       }
 
       .logo {
         font-size: 1.8rem;
-        font-weight: bold;
-        color: #2c3e50;
+        font-weight: 700;
+        color: var(--white-color); /* CHANGED: Default color is white */
+        transition: color 0.3s ease;
       }
-
+      .navbar.scrolled .logo {
+        color: var(--dark-color); /* On scroll, change to dark */
+      }
       .logo span {
-        color: #3498db;
+        color: var(--primary-color);
       }
 
       .nav-links {
         display: flex;
-        gap: 2rem;
+        align-items: center; /* Vertically align items */
+        gap: 2.5rem;
+        list-style: none;
       }
 
       .nav-links a {
         text-decoration: none;
-        color: #2c3e50;
+        color: var(--white-color); /* CHANGED: Default color is white */
         font-weight: 500;
-        transition: color 0.3s;
+        position: relative;
+        padding-bottom: 5px;
+        transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;
+      }
+
+      /* On scroll, nav links become dark */
+      .navbar.scrolled .nav-links a {
+        color: var(--dark-color);
+      }
+
+      .nav-links a:not(.nav-cta)::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background-color: var(--primary-color);
+        transition: width 0.3s ease;
+      }
+
+      .nav-links a:not(.nav-cta):hover::after,
+      .nav-links a.active::after {
+        width: 100%;
+      }
+      
+      /* Keep active link colored correctly */
+      .navbar.scrolled .nav-links a:hover,
+      .navbar.scrolled .nav-links a.active {
+        color: var(--primary-color);
+      }
+      
+      .navbar:not(.scrolled) .nav-links a:hover,
+      .navbar:not(.scrolled) .nav-links a.active {
+        color: var(--light-color); /* Can be white or a slightly off-white for hover */
+      }
+      
+      /* --- Nav CTA Button (Sign Up) --- */
+      .nav-cta {
+          padding: 0.5rem 1.5rem;
+          border-radius: 50px;
+          border: 2px solid var(--white-color);
+          font-weight: 600;
+      }
+      
+      .navbar:not(.scrolled) .nav-cta {
+          color: var(--white-color) !important;
+      }
+
+      .navbar:not(.scrolled) .nav-cta:hover {
+          background-color: var(--white-color);
+          color: var(--primary-color) !important;
+      }
+
+      .navbar.scrolled .nav-cta {
+          border-color: var(--primary-color);
+          background-color: var(--primary-color);
+          color: var(--white-color) !important;
+      }
+
+      .navbar.scrolled .nav-cta:hover {
+          background-color: var(--secondary-color);
+          border-color: var(--secondary-color);
+      }
+
+
+      .hamburger {
+        display: none;
         cursor: pointer;
+        font-size: 1.8rem;
+        color: var(--white-color); /* CHANGED: Default color is white */
+        transition: color 0.3s ease;
+      }
+      
+      .navbar.scrolled .hamburger {
+          color: var(--dark-color); /* On scroll, change to dark */
       }
 
-      .nav-links a:hover {
-        color: #3498db;
-      }
-
-      /* Section Spacing */
-      section {
-        padding: 5rem 2rem;
-        margin-top: 80px;
-      }
-
-      /* Hero Section */
+      /* --- Hero Section --- */
       .hero {
         height: 100vh;
         background: linear-gradient(
-            rgba(52, 152, 219, 0.8),
-            rgba(52, 152, 219, 0.8)
+            rgba(44, 62, 80, 0.6),
+            rgba(44, 62, 80, 0.6)
           ),
-          url("https://images.unsplash.com/photo-1581092580497-e0d23cbdf1dc")
-            center/cover;
+          url("https://images.unsplash.com/photo-1542051841857-5f90071e7989?q=80&w=2070&auto=format&fit=crop")
+            center/cover no-repeat fixed;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -86,132 +217,257 @@
       }
 
       .hero-content h1 {
-        font-size: 3.5rem;
-        margin-bottom: 1.5rem;
+        font-size: 3.8rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        letter-spacing: 1px;
       }
 
       .hero-content p {
-        font-size: 1.2rem;
-        margin-bottom: 2rem;
+        font-size: 1.3rem;
+        margin-bottom: 2.5rem;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
       }
 
       .cta-button {
-        padding: 1rem 2rem;
+        padding: 1rem 2.5rem;
         font-size: 1.1rem;
-        background-color: #fff;
-        color: #3498db;
-        border: none;
-        border-radius: 5px;
+        font-weight: 600;
+        background: var(--primary-color);
+        color: var(--white-color);
+        border: 2px solid var(--primary-color);
+        border-radius: 50px;
         cursor: pointer;
-        transition: transform 0.3s;
+        transition: all 0.3s ease;
         text-decoration: none;
+        box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
       }
 
       .cta-button:hover {
-        transform: translateY(-3px);
+        background: var(--secondary-color);
+        transform: translateY(-5px);
+        box-shadow: 0 8px 20px rgba(52, 152, 219, 0.5);
       }
 
-      /* Features Section */
-      .features {
-        background-color: #f9f9f9;
+      /* --- All Sections --- */
+      #features {
+        background-color: var(--light-color);
       }
 
       .features-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 2rem;
-        max-width: 1200px;
-        margin: 0 auto;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2.5rem;
       }
 
       .feature-card {
-        background: white;
-        padding: 2rem;
-        border-radius: 10px;
+        background: var(--white-color);
+        padding: 2.5rem;
+        border-radius: 15px;
         text-align: center;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        transition: transform 0.3s;
+        box-shadow: 0 5px 25px rgba(0, 0, 0, 0.07);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border-bottom: 4px solid transparent;
       }
 
       .feature-card:hover {
         transform: translateY(-10px);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        border-bottom-color: var(--primary-color);
       }
 
       .feature-icon {
-        font-size: 2.5rem;
-        color: #3498db;
+        font-size: 3rem;
+        color: var(--primary-color);
+        margin-bottom: 1.5rem;
+        display: inline-block;
+      }
+
+      .feature-card h3 {
+        font-size: 1.5rem;
+        color: var(--dark-color);
         margin-bottom: 1rem;
       }
 
-      /* Footer */
-      footer {
-        background-color: #2c3e50;
-        color: white;
-        text-align: center;
-        padding: 2rem;
+      /* --- About Section Specifics --- */
+      #about .feature-card {
+        text-align: left;
       }
 
-      /* Hide Sections */
-      .hidden {
-        display: none;
+      #about p {
+        text-align: justify;
       }
 
-      /* Back Button */
-      .back-button {
-        display: none;
-        margin: 20px auto;
-        padding: 1rem 2rem;
-        font-size: 1rem;
-        background-color: #3498db;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
+      /* --- Contact Section Specifics --- */
+      .team-card {
+        padding: 3rem;
+        grid-column: 1 / -1; /* Make team card span full width */
       }
 
-      /* Contact Person Section */
-      .contact-person {
-        background-color: #f1f1f1;
-        padding: 2rem;
-        text-align: center;
+      .team-members-container {
+        display: flex;
+        justify-content: space-around;
+        flex-wrap: wrap;
+        gap: 2rem;
         margin-top: 2rem;
       }
 
-      .contact-person h3 {
-        color: #2c3e50;
-        margin-bottom: 0.5rem;
+      .team-member {
+        flex-basis: 300px; /* Base width for each member */
+        text-align: center;
       }
 
-      .contact-person a {
-        color: #3498db;
+      .team-member h4 {
+        font-size: 1.2rem;
+        color: var(--dark-color);
+        margin-bottom: 0.25rem;
+      }
+
+      .member-id {
+        color: #7f8c8d;
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+      }
+
+      .member-email {
+        color: var(--primary-color);
         text-decoration: none;
         font-weight: 500;
+        transition: color 0.3s;
       }
 
-      .contact-person a:hover {
-        text-decoration: underline;
+      .member-email:hover {
+        color: var(--secondary-color);
       }
 
-      /* Remove list bullets */
-      .team-list {
-        list-style: none;
-        padding-left: 0;
+      .member-email .fa-envelope {
+        margin-right: 8px;
       }
 
-      .team-list li {
+      .contact-person-card {
+        margin-top: 2.5rem;
+        background-color: var(--dark-color);
+        color: var(--white-color);
+        padding: 2rem;
+        border-radius: 10px;
+        text-align: center;
+      }
+
+      .contact-person-card h3 {
+        color: var(--white-color);
         margin-bottom: 0.5rem;
+      }
+
+      .contact-person-card p {
+        color: var(--light-color);
+        font-size: 1.1rem;
+      }
+
+      .contact-person-card a {
+        color: var(--primary-color);
+        text-decoration: none;
+        font-weight: 500;
+        transition: opacity 0.3s;
+      }
+
+      .contact-person-card a:hover {
+        opacity: 0.8;
+      }
+
+      /* --- Footer --- */
+      footer {
+        background-color: var(--dark-color);
+        color: var(--light-color);
+        text-align: center;
+        padding: 3rem 1rem;
+      }
+
+      /* --- Responsive Design --- */
+      @media (max-width: 992px) {
+        :root {
+          --navbar-height: 70px;
+        }
+        .navbar, .navbar.scrolled {
+          padding: 1rem 3rem;
+        }
+
+        .hero-content h1 {
+          font-size: 3rem;
+        }
+
+        .hero-content p {
+          font-size: 1.2rem;
+        }
+        section {
+          padding: 4rem 0;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .nav-links {
+          position: fixed;
+          top: var(--navbar-height);
+          left: -100%; /* Start off-screen */
+          width: 100%;
+          height: calc(100vh - var(--navbar-height));
+          background-color: var(--white-color);
+          flex-direction: column;
+          align-items: center;
+          padding-top: 3rem;
+          gap: 1.5rem;
+          box-shadow: 5px 0 15px rgba(0, 0, 0, 0.1);
+          transition: left 0.4s ease-in-out;
+        }
+
+        .nav-links.active {
+          left: 0;
+        }
+
+        .nav-links a {
+          font-size: 1.2rem;
+          /* Mobile menu links should always be dark */
+          color: var(--dark-color) !important; 
+        }
+
+        .nav-cta {
+            padding: 0.75rem 1.5rem;
+            background-color: var(--primary-color);
+            color: var(--white-color) !important;
+            width: 80%;
+            text-align: center;
+            border-color: var(--primary-color);
+            margin-top: 1rem;
+        }
+
+        .hamburger {
+          display: block;
+        }
+        .navbar, .navbar.scrolled {
+          padding: 1rem 2rem;
+        }
+        .hero-content h1 {
+          font-size: 2.5rem;
+        }
       }
     </style>
   </head>
   <body>
     <!-- Navigation -->
-    <nav class="navbar">
+    <nav class="navbar" id="navbar">
       <div class="logo">Swift<span>Route</span></div>
-      <div class="nav-links">
-        <a onclick="showSection('home')">Home</a>
-        <a onclick="showSection('features')">Features</a>
-        <a onclick="showSection('about')">About</a>
-        <a onclick="showSection('contact')">Contact</a>
+      <div class="nav-links" id="nav-links">
+        <a href="#home" class="active">Home</a>
+        <a href="#features">Features</a>
+        <a href="#about">About</a>
+        <a href="#contact">Contact</a>
+        <a href="/login">Login</a>
+        <a href="/signup" class="nav-cta">Sign Up</a>
+      </div>
+      
+      <div class="hamburger" id="hamburger">
+        <i class="fas fa-bars"></i>
       </div>
     </nav>
 
@@ -219,109 +475,176 @@
     <section class="hero" id="home">
       <div class="hero-content">
         <h1>Optimize Your Routes Smartly</h1>
-        <p>Save time and reduce costs with AI-powered route optimization</p>
-        <a href="{{ url_for('upload_file') }}" class="cta-button"
-          >Get Started</a
-        >
+        <p>Save time and reduce costs with AI-powered route optimization.</p>
+        <a href="{{ url_for('upload_file') }}" class="cta-button">Get Started</a>
       </div>
     </section>
 
     <!-- Features Section -->
-    <section class="features hidden" id="features">
-      <div class="features-grid">
-        <div class="feature-card">
-          <i class="fas fa-route feature-icon"></i>
-          <h3>Optimal Routes</h3>
-          <p>
-            Get the most efficient routes calculated using advanced algorithms
-          </p>
+    <section id="features">
+      <div class="container">
+        <div class="section-header">
+          <h2>Our Features</h2>
         </div>
-        <div class="feature-card">
-          <i class="fas fa-clock feature-icon"></i>
-          <h3>Accessible Anytime</h3>
-          <p>
-            Our website is available 24/7, ensuring seamless access whenever you
-            need it.
-          </p>
-        </div>
-        <div class="feature-card">
-          <i class="fas fa-chart-line feature-icon"></i>
-          <h3>Analytics</h3>
-          <p>Detailed reports and performance metrics for your routes</p>
+        <div class="features-grid">
+          <div class="feature-card">
+            <i class="fas fa-route feature-icon"></i>
+            <h3>Optimal Routes</h3>
+            <p>
+              Get the most efficient routes calculated using advanced
+              algorithms.
+            </p>
+          </div>
+          <div class="feature-card">
+            <i class="fas fa-clock feature-icon"></i>
+            <h3>Accessible Anytime</h3>
+            <p>
+              Our website is available 24/7, ensuring seamless access whenever
+              you need it.
+            </p>
+          </div>
+          <div class="feature-card">
+            <i class="fas fa-chart-line feature-icon"></i>
+            <h3>Analytics</h3>
+            <p>Detailed reports and performance metrics for your routes.</p>
+          </div>
         </div>
       </div>
-      <button class="back-button" onclick="showSection('home')">
-        Back to Home
-      </button>
     </section>
 
     <!-- About Section -->
-    <section class="features hidden" id="about">
-      <div class="features-grid">
-        <div class="feature-card">
-          <i class="fas fa-users feature-icon"></i>
-          <h3>About SwiftRoute</h3>
-          <p style="text-align: justify">
-            SwiftRoute is an innovative AI-powered route optimization platform
-            designed to revolutionize the way businesses manage their logistics
-            and transportation needs. Our mission is to help companies save
-            time, reduce costs, and improve efficiency by providing the most
-            optimal routes for their operations. With SwiftRoute, you can leverage cutting-edge algorithms and
-            machine learning techniques to analyze various factors such as
-            traffic conditions, weather, road closures, and delivery windows.
-            This ensures that your routes are not only efficient but also
-            adaptable to real-time changes. Our platform is user-friendly and accessible 24/7, making it easy
-            for businesses of all sizes to integrate SwiftRoute into their daily
-            operations. Whether you're managing a small delivery service or a
-            large-scale logistics network, SwiftRoute is here to help you
-            achieve your goals. Join the growing number of businesses that trust SwiftRoute to
-            optimize their routes and enhance their operational efficiency.
-            Experience the future of logistics with SwiftRoute today!
-          </p>
+    <section id="about">
+      <div class="container">
+        <div class="section-header">
+          <h2>About SwiftRoute</h2>
+        </div>
+        <div class="features-grid">
+          <div class="feature-card">
+            <i class="fas fa-info-circle feature-icon"></i>
+            <h3>Our Mission</h3>
+            <p>
+              SwiftRoute is an innovative AI-powered route optimization platform
+              designed to revolutionize the way businesses manage their logistics
+              and transportation needs. Our mission is to help companies save
+              time, reduce costs, and improve efficiency by providing the most
+              optimal routes for their operations. With SwiftRoute, you can
+              leverage cutting-edge algorithms and machine learning techniques
+              to analyze various factors such as traffic conditions, weather,
+              road closures, and delivery windows. Join the growing number of businesses that trust SwiftRoute to
+              optimize their routes and enhance their operational efficiency.
+            </p>
+          </div>
         </div>
       </div>
     </section>
 
     <!-- Contact Section -->
-    <section class="features hidden" id="contact">
-      <div class="features-grid">
-        <div class="feature-card">
-          <i class="fas fa-user feature-icon"></i>
-          <h3>Team NovaHackers</h3>
-          <ul class="team-list">
-            <li>Nilam Solanki</li>
-            <li>Vignat Tank</li>
-            <li>Jishan Thobhani</li>
-            <li>Dipali Vala</li>
-            <li>Mayank Savaliya</li>
-          </ul>
+    <section id="contact">
+      <div class="container">
+        <div class="section-header">
+          <h2>Contact Us</h2>
         </div>
-      </div>
-      <div class="contact-person">
-        <h3>Contact Person</h3>
-        <p>Nilam Solanki</p>
-        <a href="mailto:22BCE342@nirmauni.ac.in">22BCE342@nirmauni.ac.in</a>
+        <div class="features-grid">
+          <div class="feature-card team-card">
+            <i class="fas fa-users feature-icon"></i>
+            <h3>Our Team</h3>
+            <div class="team-members-container">
+              <!-- Team Member 1 -->
+              <div class="team-member">
+                <h4>Kirtan Lokadiya</h4>
+                <p class="member-id">22IT066</p>
+                <a
+                  href="mailto:22it066@charusat.edu.in"
+                  class="member-email"
+                >
+                  <i class="fas fa-envelope"></i> Contact
+                </a>
+              </div>
+              <!-- Team Member 2 -->
+              <div class="team-member">
+                <h4>Harsheel Kasodariya</h4>
+                <p class="member-id">22IT055</p>
+                <a
+                  href="mailto:22it055@charusat.edu.in"
+                  class="member-email"
+                >
+                  <i class="fas fa-envelope"></i> Contact
+                </a>
+              </div>
+            </div>
+
+            <!-- Contact Person -->
+            
+          </div>
+        </div>
       </div>
     </section>
 
     <!-- Footer -->
     <footer>
-      <p>&copy; 2025 SwiftRoute. All rights reserved.</p>
+      <p>© 2025 SwiftRoute. All rights reserved.</p>
     </footer>
 
     <script>
-      function showSection(section) {
-        document
-          .querySelectorAll("section")
-          .forEach((sec) => sec.classList.add("hidden"));
-        document.getElementById(section).classList.remove("hidden");
+      document.addEventListener("DOMContentLoaded", () => {
+        const navbar = document.getElementById("navbar");
+        const navLinksContainer = document.getElementById("nav-links");
+        const navLinks = document.querySelectorAll("#nav-links a");
+        const hamburger = document.getElementById("hamburger");
+        const sections = document.querySelectorAll("section");
 
-        if (section === "features") {
-          document.querySelector(".back-button").style.display = "block";
-        } else {
-          document.querySelector(".back-button").style.display = "none";
-        }
-      }
+        // --- Navbar Scroll Effect ---
+        const handleScroll = () => {
+          if (window.scrollY > 50) {
+            navbar.classList.add("scrolled");
+          } else {
+            navbar.classList.remove("scrolled");
+          }
+        };
+
+        // --- Scroll Spy ---
+        const handleScrollSpy = () => {
+          let currentSection = "";
+          sections.forEach((section) => {
+            const sectionTop = section.offsetTop;
+            if (pageYOffset >= sectionTop - navbar.offsetHeight) {
+              currentSection = section.getAttribute("id");
+            }
+          });
+
+          navLinks.forEach((link) => {
+            link.classList.remove("active");
+             // Only add active class to internal page links, not external/auth links
+            if (link.getAttribute("href") === `#${currentSection}`) {
+              link.classList.add("active");
+            }
+          });
+        };
+        
+        // --- Event Listeners ---
+        window.addEventListener("scroll", () => {
+            handleScroll();
+            handleScrollSpy();
+        });
+
+        // --- Hamburger Menu Toggle ---
+        hamburger.addEventListener("click", () => {
+          navLinksContainer.classList.toggle("active");
+        });
+
+        // --- Close mobile menu on link click ---
+        navLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                if (navLinksContainer.classList.contains('active')) {
+                    navLinksContainer.classList.remove('active');
+                }
+            });
+        });
+
+        // --- Initial Calls ---
+        handleScroll();
+        handleScrollSpy();
+      });
     </script>
   </body>
 </html>
