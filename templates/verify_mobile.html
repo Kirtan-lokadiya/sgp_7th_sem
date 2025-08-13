@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Mobile Verification - RouteOptima</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <style>
+    body {
+      /* Consistent gradient background */
+      background: linear-gradient(to right, #e9ecef, #f8f9fa);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+    }
+    .verification-container {
+      max-width: 450px;
+      width: 100%;
+      padding: 2.5rem;
+      background: #fff;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      border: 1px solid #dee2e6;
+      text-align: center;
+    }
+    .verification-header .icon {
+      font-size: 3.5rem;
+      color: #0d6efd;
+      margin-bottom: 1rem;
+    }
+    .verification-header h2 {
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+    .verification-header p {
+      color: #6c757d;
+      margin-bottom: 2rem;
+    }
+    /* Special styling for the OTP input field */
+    #otp {
+      height: 60px;
+      text-align: center;
+      font-size: 1.5rem;
+      font-weight: 600;
+      letter-spacing: 0.5rem;
+    }
+    .btn-primary {
+      padding: 0.75rem;
+      font-weight: 500;
+      margin-top: 1rem;
+    }
+    .resend-link {
+        margin-top: 1.5rem;
+        font-size: 0.9rem;
+    }
+    /* Styling for the success state */
+    .success-icon {
+      font-size: 4rem;
+      color: #198754; /* Bootstrap success color */
+    }
+  </style>
+</head>
+<body>
+  <div class="verification-container">
+    {% if verified %}
+      <!-- Visually appealing success state -->
+      <div class="success-icon mb-3">
+        <i class="bi bi-check-circle-fill"></i>
+      </div>
+      <h3 class="fw-bold">Verification Successful!</h3>
+      <p class="text-muted mb-4">Your mobile number has been successfully verified.</p>
+      <a href="/" class="btn btn-primary w-100">Go to Dashboard</a>
+    {% else %}
+      <!-- OTP entry form state -->
+      <div class="verification-header">
+        <div class="icon"><i class="bi bi-phone-vibrate-fill"></i></div>
+        <h2>Mobile Verification</h2>
+        <!-- Note: You can pass the user's masked mobile number from your backend to display here -->
+        <p>An OTP has been sent to your mobile number.</p>
+      </div>
+
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
+            <div class="alert alert-{{ category }} alert-dismissible fade show text-start" role="alert">
+              {{ message }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+
+      <form method="POST">
+        <div class="form-floating mb-3">
+          <input type="text" name="otp" id="otp" class="form-control" placeholder="000000" required maxlength="6" pattern="\d{6}">
+          <label for="otp">Enter OTP</label>
+        </div>
+        <button type="submit" class="btn btn-primary w-100">Verify Mobile</button>
+      </form>
+
+      <div class="resend-link text-muted">
+        Didn't receive the code? 
+        <a href="#">Resend Code</a>
+      </div>
+    {% endif %}
+  </div>
+
+  <!-- Optional: Bootstrap JS Bundle for dismissible alerts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

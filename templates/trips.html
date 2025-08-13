@@ -5,25 +5,39 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Trips for {{ timeslot }}</title>
     <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
     <style>
+        :root {
+            --primary-color: #1687c5;
+            --secondary-color: #13ccf1;
+            --text-dark: #333;
+            --text-light: #666;
+            --bg-light-accent: rgba(19, 204, 241, 0.07);
+        }
+
         * {
             font-family: 'Poppins', sans-serif;
-            transition: all 0.3s ease;
+            transition: all 0.3s ease-in-out;
         }
 
         body {
             min-height: 100vh;
             margin: 0;
+            padding: 2rem 0; /* Add padding for small screens */
             display: flex;
             align-items: center;
             justify-content: center;
-            background: linear-gradient(-45deg, #13ccf1, #1687c5, #13ccf1, #1687c5);
+            background: linear-gradient(-45deg, var(--secondary-color), var(--primary-color), var(--secondary-color), var(--primary-color));
             background-size: 400% 400%;
             animation: gradientAnimation 15s ease infinite;
-            overflow: auto; /* Allow scrolling */
+            overflow-x: hidden; /* Prevent horizontal scroll from bubbles */
         }
 
         @keyframes gradientAnimation {
@@ -36,159 +50,255 @@
             position: absolute;
             border-radius: 50%;
             background: rgba(255, 255, 255, 0.1);
-            animation: float 15s infinite linear;
+            animation: float 25s infinite linear;
+            z-index: 0;
         }
 
         @keyframes float {
-            0% { transform: translateY(0) rotate(0deg); }
-            50% { transform: translateY(-100vh) rotate(180deg); }
-            100% { transform: translateY(0) rotate(360deg); }
+            0% { transform: translateY(10vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            50% { transform: translateY(-110vh) rotate(180deg); }
+            90% { opacity: 1; }
+            100% { transform: translateY(10vh) rotate(360deg); opacity: 0; }
+        }
+
+        .main-container {
+            width: 100%;
+            padding: 15px;
         }
 
         .card {
             border: none;
             border-radius: 20px;
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            width: 90%;
-            max-width: 1200px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(15px);
             z-index: 2;
             transform: translateY(0);
-            margin: 50px auto; /* Add margin for spacing */
-            max-height: 80vh; /* Limit card height */
-            overflow-y: auto; /* Enable scrolling inside the card */
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
         }
 
         .card:hover {
             transform: translateY(-5px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
         }
 
         .card-header {
             background: transparent;
-            border-bottom: 2px solid rgba(0, 123, 255, 0.1);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.08);
             padding: 2rem;
             text-align: center;
         }
 
-        .btn-primary {
-            background: linear-gradient(135deg, #13ccf1, #1687c5);
-            border: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: 12px;
-            font-weight: 500;
-            letter-spacing: 0.5px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 20px rgba(19, 204, 241, 0.3);
-        }
-
         .card-body {
             padding: 2rem;
+            overflow-y: auto; /* Allow content to scroll */
+            flex-grow: 1;
         }
 
         .title {
-            color: #1687c5;
-            font-weight: 600;
+            color: var(--primary-color);
+            font-weight: 700;
             margin-bottom: 0.5rem;
         }
 
         .subtitle {
-            color: #666;
-            font-size: 0.9rem;
+            color: var(--text-light);
+            font-size: 1rem;
+            font-weight: 400;
         }
-
+        
+        /* --- Responsive Table --- */
+        .table-responsive-wrapper {
+            overflow-x: auto;
+        }
+        
         .table {
-            margin-top: 20px;
-            color: #333;
-            width: 100%;
+            color: var(--text-dark);
+            border-collapse: separate;
+            border-spacing: 0 5px; /* Add space between rows */
         }
 
-        .table-striped tbody tr:nth-of-type(odd) {
-            background-color: rgba(19, 204, 241, 0.05);
-        }
-
-        .table-striped tbody tr:hover {
-            background-color: rgba(19, 204, 241, 0.1);
-        }
-
-        th {
-            background-color: rgba(19, 204, 241, 0.1);
-            color: #1687c5;
+        .table thead th {
+            background-color: transparent;
+            color: var(--primary-color);
             font-weight: 600;
+            border: none;
+            padding: 1rem 1.5rem;
+            white-space: nowrap;
         }
 
-        td {
+        .table tbody tr {
+            background-color: #fff;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+            border-radius: 10px;
+        }
+        
+        .table tbody tr:hover {
+            background-color: var(--bg-light-accent);
+            transform: scale(1.01);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.07);
+        }
+
+        .table tbody td {
             vertical-align: middle;
+            padding: 1rem 1.5rem;
+            border: none;
+        }
+        
+        .table tbody td:first-child {
+            border-top-left-radius: 10px;
+            border-bottom-left-radius: 10px;
+        }
+        .table tbody td:last-child {
+            border-top-right-radius: 10px;
+            border-bottom-right-radius: 10px;
         }
 
         a {
-            color: #1687c5;
+            color: var(--primary-color);
             text-decoration: none;
+            font-weight: 500;
         }
 
         a:hover {
-            color: #13ccf1;
+            color: var(--secondary-color);
         }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 10px;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            color: white;
+            box-shadow: 0 4px 15px rgba(22, 135, 197, 0.2);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(22, 135, 197, 0.3);
+            color: white;
+        }
+        
+        .card-footer {
+            padding: 1.5rem 2rem;
+            text-align: right;
+            background: transparent;
+            border-top: 1px solid rgba(0, 0, 0, 0.08);
+        }
+        
+        /* --- Responsive Table Transformation (Mobile View) --- */
+        @media (max-width: 992px) {
+            .table thead {
+                display: none; /* Hide table headers */
+            }
+            .table, .table tbody, .table tr, .table td {
+                display: block;
+                width: 100%;
+            }
+            .table tr {
+                margin-bottom: 1.5rem;
+                border: 1px solid rgba(0,0,0,0.1);
+                border-radius: 15px;
+                padding: 1rem;
+                box-shadow: none;
+            }
+            .table td {
+                padding: 0.75rem 0.5rem;
+                text-align: right; /* Value on the right */
+                position: relative;
+                border-bottom: 1px dashed rgba(0,0,0,0.1);
+            }
+            .table td:last-child {
+                border-bottom: none;
+            }
+            .table td::before {
+                content: attr(data-label); /* Use data-label for the header */
+                position: absolute;
+                left: 0.5rem;
+                width: 45%;
+                text-align: left;
+                font-weight: 600;
+                color: var(--primary-color);
+            }
+            .table td[data-label="Action"] {
+                text-align: center;
+                padding-top: 1rem;
+            }
+             .table td[data-label="Action"]::before {
+                display: none;
+             }
+        }
+        
     </style>
 </head>
 <body>
     <!-- Animated Background Elements -->
-    <div class="floating-bubble" style="width: 150px; height: 150px; top: -75px; left: 20%;"></div>
-    <div class="floating-bubble" style="width: 100px; height: 100px; top: -50px; right: 15%;"></div>
-    <div class="floating-bubble" style="width: 80px; height: 80px; bottom: -40px; left: 10%;"></div>
+    <div class="floating-bubble" style="width: 150px; height: 150px; left: 5%; animation-duration: 25s;"></div>
+    <div class="floating-bubble" style="width: 100px; height: 100px; right: 10%; animation-duration: 20s; animation-delay: 5s;"></div>
+    <div class="floating-bubble" style="width: 80px; height: 80px; left: 50%; animation-duration: 30s; animation-delay: 10s;"></div>
+    <div class="floating-bubble" style="width: 50px; height: 50px; right: 25%; animation-duration: 18s; animation-delay: 2s;"></div>
 
-    <!-- Centered Card -->
-    <div class="card">
-        <div class="card-header">
-            <h1 class="title"><i class="fas fa-route"></i> Trips for {{ timeslot }}</h1>
-            <p class="subtitle">View detailed trip information</p>
-        </div>
-        <div class="card-body">
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>Vehicle Type</th>
-                        <th>Total Shipments</th>
-                        <th>Shipments Delivered</th>
-                        <th>Route</th>
-                        <th>MST Distance (KM)</th>
-                        <th>Trip Time (Min)</th>
-                        <th>Capacity Utilization(%)</th>
-                        <th>Time Utilization (%)</th>
-                        <th>COV_UTI (Distance Utilization)</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for assignment in assignments %}
-                    <tr>
-                        <td>{{ assignment['Vehicle Type'] }}</td>
-                        <td>{{ assignment['Total Shipments'] }}</td>
-                        <td>{{ assignment['Shipments Delivered'] }}</td>
-                        <td>{{ assignment['Route'] }}</td>
-                        <td>{{ assignment['MST Distance'] }}</td>
-                        <td>{{ assignment['Trip Time'] }}</td>
-                        <td>{{ assignment['Capacity Utilization'] }}</td>
-                        <td>{{ assignment['Time Utilization'] }}</td>
-                        <td>{{ assignment['COV_UTI (Distance Utilization)'] }}</td>
-                        <td>
-                            <a href="{{ url_for('show_map', timeslot=timeslot, index=loop.index0) }}" class="btn btn-primary btn-sm">
-                                <i class="fas fa-map-marked-alt"></i> Show on Map
-                            </a>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+    <div class="container main-container">
+        <div class="card">
+            <div class="card-header">
+                <h1 class="title"><i class="fas fa-route me-2"></i> Trips for {{ timeslot }}</h1>
+                <p class="subtitle">Detailed trip information and performance metrics.</p>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive-wrapper">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Vehicle Type</th>
+                                <th>Total Shipments</th>
+                                <th>Delivered</th>
+                                <th>Route</th>
+                                <th>Distance (KM)</th>
+                                <th>Time (Min)</th>
+                                <th>Capacity Util (%)</th>
+                                <th>Time Util (%)</th>
+                                <th>Distance Util</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for assignment in assignments %}
+                            <tr>
+                                <!-- The `data-label` attribute is used for the mobile view -->
+                                <td data-label="Vehicle">{{ assignment['Vehicle Type'] }}</td>
+                                <td data-label="Total Shipments">{{ assignment['Total Shipments'] }}</td>
+                                <td data-label="Delivered">{{ assignment['Shipments Delivered'] }}</td>
+                                <td data-label="Route">{{ assignment['Route'] }}</td>
+                                <td data-label="Distance (KM)">{{ assignment['MST Distance'] }}</td>
+                                <td data-label="Time (Min)">{{ assignment['Trip Time'] }}</td>
+                                <td data-label="Capacity Util">{{ assignment['Capacity Utilization'] }}</td>
+                                <td data-label="Time Util">{{ assignment['Time Utilization'] }}</td>
+                                <td data-label="Distance Util">{{ assignment['COV_UTI (Distance Utilization)'] }}</td>
+                                <td data-label="Action">
+                                    <a href="{{ url_for('show_map', timeslot=timeslot, index=loop.index0) }}" class="btn btn-primary btn-sm">
+                                        <i class="fas fa-map-marked-alt me-1"></i> View Map
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="card-footer">
+                 <a href="javascript:history.back()" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left me-2"></i>Back
+                </a>
+            </div>
         </div>
     </div>
 
     <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

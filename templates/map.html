@@ -8,10 +8,21 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
     <style>
+        /* --- Base & Body --- */
+        :root {
+            --primary-color-start: #13ccf1;
+            --primary-color-end: #1687c5;
+        }
+
         * {
             font-family: 'Poppins', sans-serif;
-            transition: all 0.3s ease;
+            box-sizing: border-box;
         }
 
         body {
@@ -20,10 +31,11 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background: linear-gradient(-45deg, #13ccf1, #1687c5, #13ccf1, #1687c5);
+            background: linear-gradient(-45deg, var(--primary-color-start), var(--primary-color-end), #23a6d5, #23d5ab);
             background-size: 400% 400%;
             animation: gradientAnimation 15s ease infinite;
             overflow: hidden;
+            padding: 1rem;
         }
 
         @keyframes gradientAnimation {
@@ -32,111 +44,179 @@
             100% { background-position: 0% 50%; }
         }
 
+        /* --- Animated Bubbles --- */
+        .bubbles-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 1;
+        }
+
         .floating-bubble {
             position: absolute;
+            bottom: -150px; /* Start from below the screen */
             border-radius: 50%;
             background: rgba(255, 255, 255, 0.1);
-            animation: float 15s infinite linear;
+            animation: float 25s infinite linear;
         }
+
+        .floating-bubble:nth-child(1) { width: 80px; height: 80px; left: 10%; animation-duration: 20s; animation-delay: 0s; }
+        .floating-bubble:nth-child(2) { width: 20px; height: 20px; left: 20%; animation-duration: 12s; animation-delay: 2s; }
+        .floating-bubble:nth-child(3) { width: 50px; height: 50px; left: 35%; animation-duration: 30s; animation-delay: 4s; }
+        .floating-bubble:nth-child(4) { width: 100px; height: 100px; left: 50%; animation-duration: 18s; animation-delay: 0s; }
+        .floating-bubble:nth-child(5) { width: 30px; height: 30px; left: 65%; animation-duration: 22s; animation-delay: 6s; }
+        .floating-bubble:nth-child(6) { width: 60px; height: 60px; left: 80%; animation-duration: 28s; animation-delay: 1s; }
+        .floating-bubble:nth-child(7) { width: 40px; height: 40px; left: 90%; animation-duration: 15s; animation-delay: 3s; }
 
         @keyframes float {
-            0% { transform: translateY(0) rotate(0deg); }
-            50% { transform: translateY(-100vh) rotate(180deg); }
-            100% { transform: translateY(0) rotate(360deg); }
+            0% { 
+                transform: translateY(0) rotate(0deg); 
+                opacity: 1;
+            }
+            100% { 
+                transform: translateY(-100vh) rotate(720deg); 
+                opacity: 0;
+            }
         }
 
+        /* --- Card Styling --- */
         .card {
-            border: none;
-            border-radius: 20px;
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 25px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(15px);
             width: 90%;
             max-width: 800px;
             z-index: 2;
-            transform: translateY(0);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            transform: perspective(1000px) rotateX(0) rotateY(0);
         }
 
         .card:hover {
-            transform: translateY(-5px);
+            transform: perspective(1000px) translateY(-10px) rotateX(2deg) rotateY(2deg);
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.3);
         }
 
         .card-header {
-            background: linear-gradient(135deg, #13ccf1, #1687c5);
+            background: linear-gradient(135deg, var(--primary-color-start), var(--primary-color-end));
             color: white;
-            border-radius: 20px 20px 0 0;
+            border-radius: 24px 24px 0 0;
             padding: 1.5rem;
             text-align: center;
-            font-size: 1.5rem;
+            font-size: 1.6rem;
             font-weight: 600;
+            letter-spacing: 0.5px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            border-bottom: none;
         }
 
         .card-body {
-            padding: 2rem;
+            padding: 2.5rem;
         }
 
         .map-container {
             border-radius: 15px;
             overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            box-shadow: inset 0 4px 15px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(0,0,0,0.1);
+        }
+        
+        /* --- Button Styling --- */
+        .button-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 2rem;
         }
 
-        .btn-primary {
-            background: linear-gradient(135deg, #13ccf1, #1687c5);
+        .btn-custom {
+            background: linear-gradient(135deg, var(--primary-color-start), var(--primary-color-end));
             border: none;
-            padding: 0.8rem 2rem;
-            border-radius: 12px;
+            padding: 0.8rem 2.5rem;
+            border-radius: 50px;
             font-weight: 500;
+            font-size: 1.1rem;
             letter-spacing: 0.5px;
-            position: relative;
-            overflow: hidden;
-            margin-top: 1.5rem;
             color: white;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            text-decoration: none;
         }
 
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(19, 204, 241, 0.3);
+        .btn-custom:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 8px 25px rgba(19, 204, 241, 0.4);
+            color: white;
         }
 
-        /* Responsive Design */
+        .btn-custom:active {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 4px 15px rgba(19, 204, 241, 0.3);
+        }
+
+        /* --- Responsive Design --- */
         @media (max-width: 768px) {
+            body {
+                padding: 0.5rem;
+            }
+
             .card {
                 width: 95%;
-                padding: 1rem;
+                border-radius: 20px;
             }
 
             .card-header {
-                font-size: 1.2rem;
+                font-size: 1.3rem;
+                padding: 1.2rem;
+                border-radius: 19px 19px 0 0;
+            }
+
+            .card-body {
+                padding: 1.5rem;
+            }
+
+            .btn-custom {
+                width: 100%;
+                font-size: 1rem;
+                padding: 0.75rem 2rem;
             }
         }
     </style>
 </head>
 <body>
     <!-- Animated Background Elements -->
-    <div class="floating-bubble" style="width: 150px; height: 150px; top: -75px; left: 20%;"></div>
-    <div class="floating-bubble" style="width: 100px; height: 100px; top: -50px; right: 15%;"></div>
-    <div class="floating-bubble" style="width: 80px; height: 80px; bottom: -40px; left: 10%;"></div>
+    <div class="bubbles-container">
+        <div class="floating-bubble"></div>
+        <div class="floating-bubble"></div>
+        <div class="floating-bubble"></div>
+        <div class="floating-bubble"></div>
+        <div class="floating-bubble"></div>
+        <div class="floating-bubble"></div>
+        <div class="floating-bubble"></div>
+    </div>
 
     <!-- Centered Card -->
     <div class="card">
         <div class="card-header">
-            <i class="fas fa-map-marked-alt"></i> Route Map
+            <i class="fas fa-map-marked-alt me-2"></i> Route Map
         </div>
         <div class="card-body">
             <div class="map-container">
+                <!-- The map HTML will be injected here by the backend -->
                 {{ map_html|safe }}
             </div>
-            <div class="text-center mt-4">
-                <a href="{{ url_for('show_trips', timeslot=timeslot) }}" class="btn btn-primary">
-                    <i class="fas fa-arrow-left"></i> Back to Trips
+            <div class="button-container">
+                <a href="{{ url_for('show_trips', timeslot=timeslot) }}" class="btn btn-custom">
+                    <i class="fas fa-arrow-left me-2"></i> Back to Trips
                 </a>
             </div>
         </div>
     </div>
 
-    <!-- Bootstrap JS -->
+    <!-- Bootstrap JS (optional but good to have) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
